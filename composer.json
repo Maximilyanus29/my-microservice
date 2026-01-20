@@ -1,0 +1,14 @@
+{
+    "name": "vendor_name/php-my-microservice",
+    "description": "description",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "max",
+            "email": "email@example.com"
+        }
+    ],
+    "require": {
+    }
+}
