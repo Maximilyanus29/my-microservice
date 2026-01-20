@@ -1,8 +1,8 @@
 <?php
 
-namespace Services;
+namespace Services\Interfaces;
 
-interface CacheInterface
+interface Cache
 {
     public function has($key);
     public function get($key);

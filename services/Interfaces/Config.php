@@ -1,8 +1,8 @@
 <?php
 
-namespace Services;
+namespace Services\Interfaces;
 
-interface ConfigInterface
+interface Config
 {
     public function get($key, $default = null);
 }

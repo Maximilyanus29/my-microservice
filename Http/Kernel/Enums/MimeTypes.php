@@ -1,5 +1,8 @@
 <?php
 
+namespace Http\Kernel\Enums;
+
+
 enum MimeTypes: string
 {
 //    case Plain = 'text/plain';

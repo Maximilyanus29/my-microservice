@@ -1,8 +1,8 @@
 <?php
 
-namespace Services;
+namespace Services\Interfaces;
 
-interface LoggerInterface
+interface Logger
 {
     public function debug($message);
     public function info($message);

@@ -1,6 +1,7 @@
 <?php
 
-namespace Http;
+namespace Http\Kernel\Middlewares;
+
 class CustomMiddleware
 {
 
