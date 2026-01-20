@@ -1,21 +1,28 @@
 <?php
 
-//Не стал выносить в класс, так как 3 строки всего занимает, не считаю что оно того стоит. Да может изменится, но тот кто будет изменять, вынесет в отдельный класс, не вижу проблемы.
-
+use Http\Core\JsonResponse;
+use Http\Kernel\Enums\MimeTypes;
 use Http\Kernel\Router;
 use Http\Kernel\Middlewares\AuthMiddleware;
 use Http\Kernel\Requests\Request;
 
 $BASEDIR = dirname(__DIR__);
 
+//Не стал выносить в класс, так как 4 строки всего занимает, не считаю что оно того стоит. Да может измениться, но тот кто будет изменять, вынесет в отдельный класс, не вижу проблемы.
 spl_autoload_register(function ($class) {
     global $BASEDIR;
-    require_once $BASEDIR . "\\" . str_replace('/', '\\', $class) . '.php';
+    require_once $BASEDIR . "\\" . str_replace('/', '\\', $class) . '.php';//через try/catch не отловить
 });
 
-$requstMethod = \Http\Kernel\Enums\RequestMethods::from( $_SERVER['REQUEST_METHOD']);
+try {
+    $requstMethod = \Http\Kernel\Enums\RequestMethods::from( "AGgsa");//тоже ошибку не обработать почему то
+} catch (\ValueError $e) {
+    // Обрабатываем ошибку значения
+    echo "Invalid value: " . $e->getMessage();die;
+}
 
-$request = new Request(, $_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING'] ?? '');
+
+$request = new Request($requstMethod, $_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING'] ?? '');
 
 //Вообще промежуточно ПО можно вставлять куда угодно, интерфейсы разные должны быть, так как зависимость разная, auth мидлвар скорее всего нужен
 $middleware = new AuthMiddleware();
@@ -41,19 +48,23 @@ try {
     echo $response->send();
 }catch (\Exception $e){
     // в exceptionaх должен быть код ошибки и message
+    sendErrorResponse($request, $e);
+}
+
+
+/**
+ * @throws JsonException
+ */
+function sendErrorResponse($request = null, $exception = null): void
+{
     $contentType = $request->getHeader('Content-Type');
 
     switch ($contentType) {
         case MimeTypes::Json:
-            $response = new JsonResponse([$e->getMessage()], $e->getCode(), [], true);
+            $response = new JsonResponse([$exception->getMessage()], $exception->getCode(), [], true);
             break;
-        case MimeTypes::Html:
-            $response = new HtmlResponse($e->getMessage(), $e->getCode());
         default:
-            $response = new JsonResponse([$e->getMessage()], $e->getCode(), [], true);
+            $response = new JsonResponse([$exception->getMessage()], $exception->getCode(), [], true);
     }
-    $response->send();
+    echo $response->send();
 }
-
-
-
